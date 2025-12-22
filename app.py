@@ -157,7 +157,6 @@ def delete_product(id):
         db.session.commit()
     return redirect(url_for('index')) # 刪除後導回首頁
 
-# --- 新增編輯路由 ---
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_product(id):
     prod = Product.query.get_or_404(id)
@@ -213,7 +212,20 @@ def export_csv():
         mimetype="text/csv",
         headers={"Content-disposition": "attachment; filename=books_report.csv"}
     )
+
+@app.route('/product/<int:id>')
+def product_detail(id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
     
+    # 根據 ID 抓取單筆資料，若不存在則回傳 404
+    prod = Product.query.get_or_404(id)
+    
+    # 透過關聯抓出賣家帳號 (這展現了 ORM 的強大)
+    seller = User.query.get(prod.owner_id)
+    seller_name = seller.username if seller else "未知用戶"
+    
+    return render_template('detail.html', product=prod, seller_name=seller_name)
 
 if __name__ == '__main__':
     app.run(debug=True)

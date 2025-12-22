@@ -57,6 +57,7 @@
                         <a href="/edit/{{ p.id }}" class="btn btn-sm btn-outline-primary">編輯商品</a>
                         <a href="/delete/{{ p.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('確定要刪除嗎？')">刪除商品</a>
                     {% else %}
+                        <a href="/product/{{ p.id }}" class="btn btn-sm btn-outline-primary">查看詳情</a>
                         {% if p.status == 'Active' %}
                             {% if p.owner_id != session.user_id %}
                                 <a href="/buy/{{ p.id }}" class="btn btn-sm btn-success">立即購買</a>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商品詳情 - {{ product.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">返回首頁</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">商品詳細資訊</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>商品名稱：</strong> {{ product.title }}</li>
+                            <li class="list-group-item"><strong>價格：</strong> <span class="text-danger fw-bold">${{ product.price }}</span></li>
+                            <li class="list-group-item"><strong>分類：</strong> {{ product.category.name }}</li>
+                            <li class="list-group-item"><strong>商品狀態：</strong> 
+                                {{ '販售中' if product.status == 'Active' else '已售出' }}
+                            </li>
+                            <li class="list-group-item"><strong>上架時間：</strong> {{ product.created_at.strftime('%Y-%m-%d %H:%M') }}</li>
+                            <li class="list-group-item"><strong>賣家帳號：</strong> {{ seller_name }}</li>
+                            <li class="list-group-item">
+                                <strong>詳細描述：</strong><br>
+                                <p class="mt-2 text-muted" style="white-space: pre-wrap;">{{ product.description }}</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="/" class="btn btn-secondary">返回列表</a>
+                        {% if session.role != 'admin' and product.status == 'Active' and product.owner_id != session.user_id %}
+                            <a href="/buy/{{ product.id }}" class="btn btn-success">立即購買</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
