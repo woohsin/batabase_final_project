@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修改商品</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container py-5">
+    <h2>修改商品資訊</h2>
+    <form method="POST" class="mt-4 shadow-sm p-4 bg-white rounded">
+        <div class="mb-3">
+            <label>書名/商品名稱</label>
+            <input type="text" name="title" class="form-control" value="{{ product.title }}" required>
+        </div>
+        <div class="mb-3">
+            <label>價格</label>
+            <input type="number" name="price" class="form-control" value="{{ product.price }}" required>
+        </div>
+        <div class="mb-3">
+            <label>分類</label>
+            <select name="category_id" class="form-select">
+                {% for c in categories %}
+                <option value="{{ c.id }}" {% if c.id == product.category_id %}selected{% endif %}>
+                    {{ c.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>詳細描述</label>
+            <textarea name="description" class="form-control">{{ product.description }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-warning">儲存修改</button>
+        <a href="/" class="btn btn-secondary">取消</a>
+    </form>
+</body>
+</html>

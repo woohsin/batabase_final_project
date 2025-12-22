@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>校園二手交易平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container d-flex justify-content-start align-items-center">
+            <a class="navbar-brand me-4" href="/">資工二手市集</a>
+
+            <div class="navbar-nav flex-row align-items-center me-auto">
+                <span class="nav-item nav-link text-light me-3">你好, {{ session.username }} ({{ session.role }})</span>
+                {% if session.role != 'admin' %}
+                <a class="nav-link me-3" href="/my_items">我的紀錄</a>
+                {% else %}
+                <a class="nav-link text-warning me-3" href="/export">導出報表</a>
+                {% endif %}
+                
+                <a class="nav-link btn btn-danger btn-sm text-white px-2" href="/logout">登出</a>
+            </div>
+
+            <div class="d-flex">
+                {% if session.role != 'admin' %}
+                    <a href="/add" class="btn btn-primary">我要上架</a>
+                {% else %}
+                    <span class="text-warning fw-bold me-3 align-self-center">後台管理系統</span>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3 mb-4">
+        <form action="/" method="GET" class="d-flex">
+            <input type="text" name="q" class="form-control me-2" placeholder="搜尋書名或內容..." value="{{ query or '' }}">
+            <button type="submit" class="btn btn-outline-primary">搜尋</button>
+            {% if query %}
+                <a href="/" class="btn btn-link">清除</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="container">
+    <div class="row">
+        {% for p in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                <span class="badge bg-info text-dark">{{ p.category.name }}</span>
+                <h5 class="card-title mt-2">{{ p.title }}</h5>
+                <p class="card-text text-danger fw-bold">${{ p.price }}</p>
+
+                <hr>
+                <div class="mt-2">
+                    {% if session.role == 'admin' %}
+                        <span class="badge bg-dark mb-2">管理員權限</span><br>
+                        <a href="/edit/{{ p.id }}" class="btn btn-sm btn-outline-primary">編輯商品</a>
+                        <a href="/delete/{{ p.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('確定要刪除嗎？')">刪除商品</a>
+                    {% else %}
+                        {% if p.status == 'Active' %}
+                            {% if p.owner_id != session.user_id %}
+                                <a href="/buy/{{ p.id }}" class="btn btn-sm btn-success">立即購買</a>
+                            {% else %}
+                                <span class="badge bg-secondary">這是您的商品</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-light text-dark border">已售出</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
